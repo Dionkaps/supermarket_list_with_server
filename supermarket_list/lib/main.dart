@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-void main() async  {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MaterialApp(
@@ -34,9 +34,15 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  deleteSuperListEl() {}
+  deleteSuperListEl(item) {
+    DocumentReference documentReference =
+        FirebaseFirestore.instance.collection("SupermarketList").doc(item);
 
-  var supermarket = List<String>.empty(growable: true);
+    documentReference.delete().whenComplete(() {
+      print("Deleted");
+    });
+  }
+
   String input = "";
   TextEditingController _textFieldController = TextEditingController();
   @override
@@ -88,9 +94,13 @@ class _MyAppState extends State<MyApp> {
               shrinkWrap: true,
               itemCount: (snapshots.data)?.docs.length ?? 0,
               itemBuilder: (context, index) {
-                DocumentSnapshot documentSnapshot = (snapshots.data!).docs[index];
+                DocumentSnapshot documentSnapshot =
+                    (snapshots.data!).docs[index];
                 return Dismissible(
-                    key: Key(index.toString()),
+                  onDismissed: (direction) {
+                    deleteSuperListEl(documentSnapshot["Itemtitle"]);
+                  },
+                    key: Key(documentSnapshot["Itemtitle"]),
                     child: Card(
                       elevation: 3,
                       margin: const EdgeInsets.all(5),
@@ -105,7 +115,7 @@ class _MyAppState extends State<MyApp> {
                           ),
                           onPressed: () {
                             setState(() {
-                              supermarket.removeAt(index);
+                              deleteSuperListEl(documentSnapshot["Itemtitle"]);
                             });
                           },
                         ),
