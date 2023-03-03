@@ -30,6 +30,7 @@ class _MyAppState extends State<MyApp> {
 
   var supermarket = List<String>.empty(growable: true);
   String input = "";
+  TextEditingController _textFieldController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,9 +45,10 @@ class _MyAppState extends State<MyApp> {
                   return AlertDialog(
                     elevation: 50,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                    title: const Text('Add  new Item'),
+                        borderRadius: BorderRadius.circular(20)),
+                    title: const Text('Add new Item'),
                     content: TextField(
+                      controller: _textFieldController,
                       onChanged: (String value) {
                         input = value;
                       },
@@ -54,9 +56,12 @@ class _MyAppState extends State<MyApp> {
                     actions: <Widget>[
                       TextButton(
                           onPressed: () {
+                            _textFieldController.clear();
                             setState(() {
                               supermarket.add(input);
                             });
+                            
+                            //Navigator.of(context).pop(); De nomizw pws einai voliko na prostethei
                           },
                           child: const Text("Add"))
                     ],
