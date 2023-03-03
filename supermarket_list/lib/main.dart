@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async  {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     theme: ThemeData(
@@ -19,14 +23,18 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    super.initState();
-    supermarket.add("Item 1");
-    supermarket.add("Item 2");
-    supermarket.add("Item 3");
-    supermarket.add("Item 4");
+  createSuperListEl() {
+    DocumentReference documentReference =
+        FirebaseFirestore.instance.collection("SupermarketList").doc(input);
+
+    Map<String, String> superList = {"Itemtitle": input};
+
+    documentReference.set(superList).whenComplete(() {
+      print("$input Created");
+    });
   }
+
+  deleteSuperListEl() {}
 
   var supermarket = List<String>.empty(growable: true);
   String input = "";
@@ -57,10 +65,8 @@ class _MyAppState extends State<MyApp> {
                       TextButton(
                           onPressed: () {
                             _textFieldController.clear();
-                            setState(() {
-                              supermarket.add(input);
-                            });
-                            
+                            createSuperListEl();
+
                             //Navigator.of(context).pop(); De nomizw pws einai voliko na prostethei
                           },
                           child: const Text("Add"))
@@ -73,31 +79,40 @@ class _MyAppState extends State<MyApp> {
             color: Colors.white,
           ),
         ),
-        body: ListView.builder(
-          itemCount: supermarket.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Dismissible(
-                key: Key(supermarket[index]),
-                child: Card(
-                  elevation: 3,
-                  margin: const EdgeInsets.all(5),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  child: ListTile(
-                    title: Text(supermarket[index]),
-                    trailing: IconButton(
-                      icon: const Icon(
-                        Icons.delete,
-                        color: Colors.red,
+        body: StreamBuilder(
+          stream: FirebaseFirestore.instance
+              .collection("SupermarketList")
+              .snapshots(),
+          builder: (context, snapshots) {
+            return ListView.builder(
+              shrinkWrap: true,
+              itemCount: (snapshots.data)?.docs.length ?? 0,
+              itemBuilder: (context, index) {
+                DocumentSnapshot documentSnapshot = (snapshots.data!).docs[index];
+                return Dismissible(
+                    key: Key(index.toString()),
+                    child: Card(
+                      elevation: 3,
+                      margin: const EdgeInsets.all(5),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      child: ListTile(
+                        title: Text(documentSnapshot["Itemtitle"]),
+                        trailing: IconButton(
+                          icon: const Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              supermarket.removeAt(index);
+                            });
+                          },
+                        ),
                       ),
-                      onPressed: () {
-                        setState(() {
-                          supermarket.removeAt(index);
-                        });
-                      },
-                    ),
-                  ),
-                ));
+                    ));
+              },
+            );
           },
         ));
   }
