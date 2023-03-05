@@ -9,7 +9,7 @@ void main() async {
     debugShowCheckedModeBanner: false,
     theme: ThemeData(
       brightness: Brightness.light,
-      primaryColor: Colors.blue,
+      primaryColor: Colors.pink,
     ),
     home: const MyApp(),
   ));
@@ -49,40 +49,52 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Nai poios einai"),
+          centerTitle: true,
+          title: const Text("SuperMarket"),
+          backgroundColor: Colors.pink[600],
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    elevation: 50,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
-                    title: const Text('Add new Item'),
-                    content: TextField(
-                      controller: _textFieldController,
-                      onChanged: (String value) {
-                        input = value;
-                      },
-                    ),
-                    actions: <Widget>[
-                      TextButton(
-                          onPressed: () {
-                            _textFieldController.clear();
-                            createSuperListEl();
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.only(bottom: 35.0),
+          child: FloatingActionButton(
+            backgroundColor: Colors.pink,
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      elevation: 50,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      title: const Text('Add'),
+                      content: TextField(
+                        autofocus: true,
+                        decoration: const InputDecoration(
+                          labelText: 'Add new item',
+                          border: InputBorder.none,
+                        ),
+                        controller: _textFieldController,
+                        onChanged: (String value) {
+                          input = value;
+                        },
+                      ),
+                      actions: <Widget>[
+                        TextButton(
+                            onPressed: () {
+                              _textFieldController.clear();
+                              createSuperListEl();
 
-                            //Navigator.of(context).pop(); De nomizw pws einai voliko na prostethei
-                          },
-                          child: const Text("Add"))
-                    ],
-                  );
-                });
-          },
-          child: const Icon(
-            Icons.add,
-            color: Colors.white,
+                              //Navigator.of(context).pop(); De nomizw pws einai voliko na prostethei
+                            },
+                            child: const Text("Add"))
+                      ],
+                    );
+                  });
+            },
+            child: const Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
           ),
         ),
         body: StreamBuilder(
@@ -97,9 +109,9 @@ class _MyAppState extends State<MyApp> {
                 DocumentSnapshot documentSnapshot =
                     (snapshots.data!).docs[index];
                 return Dismissible(
-                  onDismissed: (direction) {
-                    deleteSuperListEl(documentSnapshot["Itemtitle"]);
-                  },
+                    onDismissed: (direction) {
+                      deleteSuperListEl(documentSnapshot["Itemtitle"]);
+                    },
                     key: Key(documentSnapshot["Itemtitle"]),
                     child: Card(
                       elevation: 3,
@@ -110,8 +122,8 @@ class _MyAppState extends State<MyApp> {
                         title: Text(documentSnapshot["Itemtitle"]),
                         trailing: IconButton(
                           icon: const Icon(
-                            Icons.delete,
-                            color: Colors.red,
+                            Icons.check,
+                            color: Colors.green,
                           ),
                           onPressed: () {
                             setState(() {
