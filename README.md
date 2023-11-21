@@ -1,6 +1,6 @@
 # Supermarket List App 🛒
 
-Welcome to our Supermarket List App, a Flutter-based mobile application designed to streamline communication and eliminate miscommunication when it comes to shopping for your household. This app is tailored for two or more users living under the same roof, making it easier to coordinate and keep track of what's needed from the supermarket.
+Welcome to my Supermarket List App, a Flutter-based mobile application designed to streamline communication and eliminate miscommunication when it comes to shopping for your household. This app is tailored for two or more users living under the same roof, making it easier to coordinate and keep track of what's needed from the supermarket.
 
 ## Key Features:
 
